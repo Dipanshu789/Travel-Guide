@@ -34,6 +34,10 @@ yarn-error.log*
 .DS_Store
 Thumbs.db
 
+# API Secrets
+api/*.json
+backend-service/list-models.js
+
 # Large files
 *.vsix
 *.keras

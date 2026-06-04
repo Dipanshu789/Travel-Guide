@@ -1,0 +1,33 @@
+services:
+  # 1. FastAPI Machine Learning Service
+  - type: web
+    name: travel-ml-service
+    env: python
+    rootDir: ml
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+
+  # 2. Next.js Backend Service
+  - type: web
+    name: travel-backend-service
+    env: node
+    rootDir: backend-service
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 20.x
+
+  # 3. Expo React Native Frontend (Static Web Export)
+  - type: web
+    name: travel-frontend
+    env: static
+    rootDir: frontend
+    buildCommand: npm install && npx expo export -p web
+    staticPublishPath: dist
+    envVars:
+      - key: NODE_VERSION
+        value: 20.x
