@@ -25,7 +25,8 @@ export default function AuthScreen({ navigation }: any) {
 
   const syncWithBackend = async (idToken: string) => {
     try {
-      const response = await fetch('http://localhost:3000/api/auth/sync', {
+      const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL || 'http://localhost:3000';
+      const response = await fetch(`${BACKEND_URL}/api/auth/sync`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
