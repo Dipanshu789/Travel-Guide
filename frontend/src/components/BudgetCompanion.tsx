@@ -63,7 +63,7 @@ export default function BudgetCompanion({ visible, onClose, initialFrom = '', in
       const response = await fetch(`${BACKEND_URL}/api/ai/plan`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ from, to, budget, days })
+        body: JSON.stringify({ from: from.trim(), to: to.trim(), budget, days })
       });
 
       const data = await response.json();

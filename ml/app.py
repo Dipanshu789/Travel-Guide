@@ -122,8 +122,8 @@ async def predict_trip(req: PredictionRequest):
         traceback.print_exc()
         print(f"Model prediction failed or format mismatch: {e}")
         # Fallback to dataset averages if model prediction fails
-        route_data = combined_df[(combined_df['Origin'].str.lower() == req.origin.lower()) & 
-                                 (combined_df['Destination'].str.lower() == req.destination.lower())]
+        route_data = combined_df[(combined_df['Origin'].str.lower() == req.origin.lower().strip()) & 
+                                 (combined_df['Destination'].str.lower() == req.destination.lower().strip())]
         if not route_data.empty:
             predicted_hotel_price = route_data['Hotel_Price_Per_Night_INR'].mean()
         else:
@@ -138,8 +138,8 @@ async def predict_trip(req: PredictionRequest):
         transport_mode = "Flight"
     else:
         # Try to find common transport from dataset
-        route_data = combined_df[(combined_df['Origin'].str.lower() == req.origin.lower()) & 
-                                 (combined_df['Destination'].str.lower() == req.destination.lower())]
+        route_data = combined_df[(combined_df['Origin'].str.lower() == req.origin.lower().strip()) & 
+                                 (combined_df['Destination'].str.lower() == req.destination.lower().strip())]
         if not route_data.empty:
             transport_mode = route_data['Recommended_Transport'].mode()[0]
         else:
@@ -153,8 +153,8 @@ async def predict_trip(req: PredictionRequest):
     final_hotel_price = max(min(predicted_hotel_price, cap_hotel), realistic_min_hotel)
     
     # Get dataset subset for this specific route to be used in heuristics
-    route_data = combined_df[(combined_df['Origin'].str.lower() == req.origin.lower()) & 
-                             (combined_df['Destination'].str.lower() == req.destination.lower())]
+    route_data = combined_df[(combined_df['Origin'].str.lower() == req.origin.lower().strip()) & 
+                             (combined_df['Destination'].str.lower() == req.destination.lower().strip())]
 
     # Heuristic 4: Dynamic Selection using dataframe
     final_hotel_name = "Budget Backpacker Hostel"
