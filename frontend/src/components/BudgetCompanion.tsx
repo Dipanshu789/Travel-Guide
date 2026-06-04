@@ -6,7 +6,7 @@ import GenerateButton from './GenerateButton';
 
 const TypewriterText = ({ text, onComplete }: { text: string, onComplete?: () => void }) => {
   const [displayedText, setDisplayedText] = useState('');
-  
+
   useEffect(() => {
     let index = 0;
     setDisplayedText('');
@@ -40,7 +40,7 @@ export default function BudgetCompanion({ visible, onClose, initialFrom = '', in
   const [to, setTo] = useState(initialTo);
   const [budget, setBudget] = useState(initialBudget);
   const [days, setDays] = useState(initialDays);
-  
+
   const [loading, setLoading] = useState(false);
   const [plan, setPlan] = useState<any>(null);
   const [error, setError] = useState('');
@@ -51,7 +51,7 @@ export default function BudgetCompanion({ visible, onClose, initialFrom = '', in
       setError('Please fill out all fields.');
       return;
     }
-    
+
     setError('');
     setLoading(true);
     setPlan(null);
@@ -65,7 +65,7 @@ export default function BudgetCompanion({ visible, onClose, initialFrom = '', in
       });
 
       const data = await response.json();
-      
+
       if (!response.ok) {
         throw new Error(data.error || 'Failed to fetch plan');
       }
@@ -83,7 +83,7 @@ export default function BudgetCompanion({ visible, onClose, initialFrom = '', in
     <Modal visible={visible} animationType="slide" transparent={true}>
       <View style={styles.modalOverlay}>
         <View style={styles.modalContent}>
-          
+
           <View style={styles.modalHeader}>
             <Text style={styles.modalTitle}>AI Trip Planner ✨</Text>
             <TouchableOpacity onPress={onClose} style={styles.closeBtn}>
@@ -96,47 +96,47 @@ export default function BudgetCompanion({ visible, onClose, initialFrom = '', in
             <View style={styles.inputGroup}>
               <View style={styles.inputRow}>
                 <Ionicons name="airplane-outline" size={20} color="#6C63FF" style={styles.inputIcon} />
-                <TextInput 
-                  style={styles.input} 
-                  placeholder="From (e.g. New York)" 
-                  value={from} 
-                  onChangeText={setFrom} 
+                <TextInput
+                  style={styles.input}
+                  placeholder="From (e.g. New York)"
+                  value={from}
+                  onChangeText={setFrom}
                 />
               </View>
               <View style={styles.inputRow}>
                 <Ionicons name="location-outline" size={20} color="#FF6B6B" style={styles.inputIcon} />
-                <TextInput 
-                  style={styles.input} 
-                  placeholder="To (e.g. Paris)" 
-                  value={to} 
-                  onChangeText={setTo} 
+                <TextInput
+                  style={styles.input}
+                  placeholder="To (e.g. Paris)"
+                  value={to}
+                  onChangeText={setTo}
                 />
               </View>
               <View style={styles.inputRow}>
                 <Ionicons name="wallet-outline" size={20} color="#4ECDC4" style={styles.inputIcon} />
-                <TextInput 
-                  style={styles.input} 
-                  placeholder="Total Budget (INR)" 
+                <TextInput
+                  style={styles.input}
+                  placeholder="Total Budget (INR)"
                   keyboardType="numeric"
-                  value={budget} 
-                  onChangeText={setBudget} 
+                  value={budget}
+                  onChangeText={setBudget}
                 />
               </View>
               <View style={styles.inputRow}>
                 <Ionicons name="calendar-outline" size={20} color="#FFA07A" style={styles.inputIcon} />
-                <TextInput 
-                  style={styles.input} 
-                  placeholder="How many days stay?" 
+                <TextInput
+                  style={styles.input}
+                  placeholder="How many days stay?"
                   keyboardType="numeric"
-                  value={days} 
-                  onChangeText={setDays} 
+                  value={days}
+                  onChangeText={setDays}
                 />
               </View>
 
               <View style={{ alignItems: 'center', marginTop: 15 }}>
                 <GenerateButton onPress={generatePlan} disabled={loading} loading={loading} />
               </View>
-              
+
               {error ? <Text style={styles.errorText}>{error}</Text> : null}
             </View>
 
@@ -151,7 +151,7 @@ export default function BudgetCompanion({ visible, onClose, initialFrom = '', in
             {/* AI Results */}
             {plan && !loading && (
               <Animated.View entering={FadeInUp.duration(600)} exiting={FadeOutDown}>
-                
+
                 {/* GPT Style Modern Report */}
                 <View style={styles.gptContainer}>
                   <View style={styles.gptAvatar}>
@@ -192,7 +192,7 @@ export default function BudgetCompanion({ visible, onClose, initialFrom = '', in
                         <Text style={styles.sectionHeading}>Top Attractions</Text>
                       </View>
                       <Text style={styles.subtext}>Est. Ticket Cost: ₹{plan.attraction_ticket_cost}</Text>
-                      
+
                       <View style={styles.pillContainer}>
                         {plan.top_attractions?.split('|').map((attr: string, index: number) => (
                           <View key={index} style={styles.pill}>
@@ -217,7 +217,7 @@ export default function BudgetCompanion({ visible, onClose, initialFrom = '', in
 
                     <View style={styles.alternativeSection}>
                       <Text style={styles.sectionHeading}>Alternative Attractions</Text>
-                      {plan.alternative_attractions && plan.alternative_attractions.length > 0 ? plan.alternative_attractions.slice(0,3).map((attrs: string, index: number) => (
+                      {plan.alternative_attractions && plan.alternative_attractions.length > 0 ? plan.alternative_attractions.slice(0, 3).map((attrs: string, index: number) => (
                         <View key={index} style={styles.altAttractionCard}>
                           <Ionicons name="compass-outline" size={16} color="#6C63FF" style={{ marginTop: 2, marginRight: 8 }} />
                           <Text style={styles.altAttractionText}>{attrs.split('|').map((a: string) => a.trim()).join(', ')}</Text>
@@ -229,7 +229,7 @@ export default function BudgetCompanion({ visible, onClose, initialFrom = '', in
 
               </Animated.View>
             )}
-            
+
             <View style={{ height: 40 }} />
           </ScrollView>
 
@@ -311,7 +311,7 @@ const styles = StyleSheet.create({
     color: '#666',
     fontSize: 16,
   },
-  
+
   /* --- NEW GPT CHAT STYLES --- */
   gptContainer: {
     flexDirection: 'row',

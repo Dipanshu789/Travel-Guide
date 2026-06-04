@@ -105,89 +105,89 @@ export default function AuthScreen({ navigation }: any) {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={{ flex: 1 }} onPointerMove={handlePointerMove}>
-        <KeyboardAvoidingView 
+        <KeyboardAvoidingView
           style={styles.container}
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
-          <InteractiveAirplane 
-            cursorX={cursorX} 
-            cursorY={cursorY} 
-            isPasswordFocused={passwordFocus} 
-            isPasswordVisible={isPasswordVisible} 
+          <InteractiveAirplane
+            cursorX={cursorX}
+            cursorY={cursorY}
+            isPasswordFocused={passwordFocus}
+            isPasswordVisible={isPasswordVisible}
           />
           <View style={styles.form}>
-          <View style={styles.flexColumn}>
-            <Text style={styles.label}>Email</Text>
-          </View>
-          <View style={[styles.inputForm, emailFocus && styles.inputFormFocused]}>
-            <Ionicons name="mail-outline" size={20} color="#666" />
-            <TextInput
-              style={[styles.input, Platform.OS === 'web' && { outlineStyle: 'none' } as any]}
-              placeholder="Enter your Email"
-              placeholderTextColor="#999"
-              value={email}
-              onChangeText={setEmail}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              onFocus={() => setEmailFocus(true)}
-              onBlur={() => setEmailFocus(false)}
-            />
-          </View>
-
-          <View style={[styles.flexColumn, { marginTop: 15 }]}>
-            <Text style={styles.label}>Password</Text>
-          </View>
-          <View style={[styles.inputForm, passwordFocus && styles.inputFormFocused]}>
-            <Ionicons name="lock-closed-outline" size={20} color="#666" />
-            <TextInput
-              style={[styles.input, Platform.OS === 'web' && { outlineStyle: 'none' } as any]}
-              placeholder="Enter your Password"
-              placeholderTextColor="#999"
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry={!isPasswordVisible}
-              onFocus={() => setPasswordFocus(true)}
-              onBlur={() => setPasswordFocus(false)}
-            />
-            <TouchableOpacity onPress={() => setIsPasswordVisible(!isPasswordVisible)} style={{ padding: 5 }}>
-              <Ionicons name={isPasswordVisible ? "eye-off-outline" : "eye-outline"} size={20} color="#666" />
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.flexRow}>
-            <View style={styles.rememberMeContainer}>
-              <View style={styles.radioPlaceholder} />
-              <Text style={styles.rememberText}>Remember me</Text>
+            <View style={styles.flexColumn}>
+              <Text style={styles.label}>Email</Text>
             </View>
-            <Text style={styles.span}>Forgot password?</Text>
-          </View>
+            <View style={[styles.inputForm, emailFocus && styles.inputFormFocused]}>
+              <Ionicons name="mail-outline" size={20} color="#666" />
+              <TextInput
+                style={[styles.input, Platform.OS === 'web' && { outlineStyle: 'none' } as any]}
+                placeholder="Enter your Email"
+                placeholderTextColor="#999"
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                onFocus={() => setEmailFocus(true)}
+                onBlur={() => setEmailFocus(false)}
+              />
+            </View>
 
-          <TouchableOpacity style={styles.buttonSubmit} onPress={handleLogin} disabled={loading}>
-            {loading ? (
-              <ActivityIndicator color="white" />
-            ) : (
-              <Text style={styles.buttonSubmitText}>Sign In</Text>
-            )}
-          </TouchableOpacity>
+            <View style={[styles.flexColumn, { marginTop: 15 }]}>
+              <Text style={styles.label}>Password</Text>
+            </View>
+            <View style={[styles.inputForm, passwordFocus && styles.inputFormFocused]}>
+              <Ionicons name="lock-closed-outline" size={20} color="#666" />
+              <TextInput
+                style={[styles.input, Platform.OS === 'web' && { outlineStyle: 'none' } as any]}
+                placeholder="Enter your Password"
+                placeholderTextColor="#999"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry={!isPasswordVisible}
+                onFocus={() => setPasswordFocus(true)}
+                onBlur={() => setPasswordFocus(false)}
+              />
+              <TouchableOpacity onPress={() => setIsPasswordVisible(!isPasswordVisible)} style={{ padding: 5 }}>
+                <Ionicons name={isPasswordVisible ? "eye-off-outline" : "eye-outline"} size={20} color="#666" />
+              </TouchableOpacity>
+            </View>
 
-          <Text style={styles.p}>
-            Don't have an account? <Text style={styles.span} onPress={handleSignUp}>Sign Up</Text>
-          </Text>
+            <View style={styles.flexRow}>
+              <View style={styles.rememberMeContainer}>
+                <View style={styles.radioPlaceholder} />
+                <Text style={styles.rememberText}>Remember me</Text>
+              </View>
+              <Text style={styles.span}>Forgot password?</Text>
+            </View>
 
-          <Text style={styles.pLine}>Or With</Text>
-
-          <View style={styles.socialRow}>
-            <TouchableOpacity style={styles.btn} onPress={handleGoogleLogin}>
-              <Ionicons name="logo-google" size={20} color="#EA4335" />
-              <Text style={styles.btnText}>Google</Text>
+            <TouchableOpacity style={styles.buttonSubmit} onPress={handleLogin} disabled={loading}>
+              {loading ? (
+                <ActivityIndicator color="white" />
+              ) : (
+                <Text style={styles.buttonSubmitText}>Sign In</Text>
+              )}
             </TouchableOpacity>
-            
-            <TouchableOpacity style={styles.btn} onPress={handleAppleLogin}>
-              <Ionicons name="logo-apple" size={20} color="#000" />
-              <Text style={styles.btnText}>Apple</Text>
-            </TouchableOpacity>
+
+            <Text style={styles.p}>
+              Don't have an account? <Text style={styles.span} onPress={handleSignUp}>Sign Up</Text>
+            </Text>
+
+            <Text style={styles.pLine}>Or With</Text>
+
+            <View style={styles.socialRow}>
+              <TouchableOpacity style={styles.btn} onPress={handleGoogleLogin}>
+                <Ionicons name="logo-google" size={20} color="#EA4335" />
+                <Text style={styles.btnText}>Google</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.btn} onPress={handleAppleLogin}>
+                <Ionicons name="logo-apple" size={20} color="#000" />
+                <Text style={styles.btnText}>Apple</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
         </KeyboardAvoidingView>
       </View>
     </SafeAreaView>

@@ -50,7 +50,7 @@ export async function POST(req: Request) {
 
       if (mlResponse.ok) {
         const mlData = await mlResponse.json();
-        
+
         // Pass the ML response directly to the frontend
         return NextResponse.json({ plan: mlData }, { headers });
 
