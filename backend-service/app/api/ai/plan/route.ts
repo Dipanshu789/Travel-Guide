@@ -35,7 +35,8 @@ export async function POST(req: Request) {
 
     // Call our new ML microservice instead of Gemini
     try {
-      const ML_URL = process.env.ML_SERVICE_URL || 'http://127.0.0.1:8000';
+      let ML_URL = process.env.ML_SERVICE_URL || 'http://127.0.0.1:8000';
+      if (ML_URL.endsWith('/')) ML_URL = ML_URL.slice(0, -1);
       const mlResponse = await fetch(`${ML_URL}/predict`, {
         method: 'POST',
         headers: {
