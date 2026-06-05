@@ -13,6 +13,7 @@ import * as ImagePicker from 'expo-image-picker';
 
 export default function HomeScreen() {
   const { colors } = useTheme();
+  const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL || 'http://localhost:3000';
   
   const [profile, setProfile] = useState<any>(null);
 
@@ -21,7 +22,7 @@ export default function HomeScreen() {
       const fetchProfile = async () => {
         try {
           const token = await auth.currentUser?.getIdToken();
-          const profileRes = await fetch('http://localhost:3000/api/user/profile', {
+          const profileRes = await fetch(`${BACKEND_URL}/api/user/profile`, {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${token}` }
           });
@@ -62,7 +63,7 @@ export default function HomeScreen() {
   const fetchStories = async () => {
     try {
       const token = await auth.currentUser?.getIdToken();
-      const res = await fetch('http://localhost:3000/api/user/stories', {
+      const res = await fetch(`${BACKEND_URL}/api/user/stories`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (res.ok) {
@@ -108,7 +109,7 @@ export default function HomeScreen() {
       const token = await auth.currentUser?.getIdToken();
       
       // 1. Upload to Cloudinary with filters
-      const uploadRes = await fetch('http://localhost:3000/api/upload', {
+      const uploadRes = await fetch(`${BACKEND_URL}/api/upload`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -121,7 +122,7 @@ export default function HomeScreen() {
       if (!uploadRes.ok) throw new Error(uploadData.error);
 
       // 2. Save to NeonDB
-      const saveRes = await fetch('http://localhost:3000/api/user/stories', {
+      const saveRes = await fetch(`${BACKEND_URL}/api/user/stories`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ image: uploadData.url })

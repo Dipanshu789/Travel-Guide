@@ -10,6 +10,7 @@ import StoryViewer from '../../components/StoryViewer';
 import PostDetailModal from '../../components/PostDetailModal';
 
 export default function ProfileScreen({ navigation }: any) {
+  const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL || 'http://localhost:3000';
   const [profile, setProfile] = useState<any>(null);
   const [userPosts, setUserPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -47,7 +48,7 @@ export default function ProfileScreen({ navigation }: any) {
       const token = await currentUser.getIdToken();
       
       // Fetch Profile
-      const profileRes = await fetch('http://localhost:3000/api/user/profile', {
+      const profileRes = await fetch(`${BACKEND_URL}/api/user/profile`, {
         method: 'GET',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -60,7 +61,7 @@ export default function ProfileScreen({ navigation }: any) {
       }
 
       // Fetch Posts
-      const postsRes = await fetch('http://localhost:3000/api/user/posts', {
+      const postsRes = await fetch(`${BACKEND_URL}/api/user/posts`, {
         method: 'GET',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -70,7 +71,7 @@ export default function ProfileScreen({ navigation }: any) {
       }
 
       // Fetch own story to show ring on avatar
-      const storiesRes = await fetch('http://localhost:3000/api/user/stories', {
+      const storiesRes = await fetch(`${BACKEND_URL}/api/user/stories`, {
         method: 'GET',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -106,7 +107,7 @@ export default function ProfileScreen({ navigation }: any) {
 
   const uploadImageToCloudinary = async (base64Image: string, folder: string) => {
     const token = await auth.currentUser?.getIdToken();
-    const response = await fetch('http://localhost:3000/api/upload', {
+    const response = await fetch(`${BACKEND_URL}/api/upload`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -130,7 +131,7 @@ export default function ProfileScreen({ navigation }: any) {
     setActionLoading(true);
     try {
       const token = await auth.currentUser?.getIdToken();
-      const res = await fetch('http://localhost:3000/api/user/profile', {
+      const res = await fetch(`${BACKEND_URL}/api/user/profile`, {
         method: 'PATCH',
         headers: { 
           'Authorization': `Bearer ${token}`,
@@ -229,7 +230,7 @@ export default function ProfileScreen({ navigation }: any) {
       const token = await auth.currentUser?.getIdToken();
       
       // 1. Upload to Cloudinary with filters
-      const uploadRes = await fetch('http://localhost:3000/api/upload', {
+      const uploadRes = await fetch(`${BACKEND_URL}/api/upload`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -242,7 +243,7 @@ export default function ProfileScreen({ navigation }: any) {
       if (!uploadRes.ok) throw new Error(uploadData.error);
 
       // 2. Save to NeonDB
-      const endpoint = isEditorForStory ? 'http://localhost:3000/api/user/stories' : 'http://localhost:3000/api/user/posts';
+      const endpoint = isEditorForStory ? `${BACKEND_URL}/api/user/stories` : `${BACKEND_URL}/api/user/posts`;
       const bodyPayload = isEditorForStory ? { image: uploadData.url } : { image: uploadData.url, caption };
 
       const saveRes = await fetch(endpoint, {
