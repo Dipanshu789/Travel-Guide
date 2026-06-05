@@ -1,1 +1,6 @@
-{"from":"NY","to":"LA","budget":"1000","days":"3"}
+{
+    "from": "NY",
+    "to": "LA",
+    "budget": "1000",
+    "days": "3"
+}

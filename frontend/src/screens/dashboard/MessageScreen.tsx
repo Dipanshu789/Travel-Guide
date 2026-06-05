@@ -1,8 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '../../config/ThemeContext';
 
 export default function MessageScreen() {
+  const { colors } = useTheme();
   const activeChats = [
     { id: 1, name: 'Travel Support', message: 'Your flight to Paris is confirmed! ✈️', time: '10:42 AM', unread: 2, avatarColor: '#6C63FF' },
     { id: 2, name: 'Local Guide Marco', message: 'See you at the Colosseum tomorrow at 9.', time: 'Yesterday', unread: 0, avatarColor: '#4ECDC4' },
@@ -11,14 +13,14 @@ export default function MessageScreen() {
   ];
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={[styles.safeArea, { backgroundColor: colors.background }]}>
       <View style={styles.container}>
         
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>Messages</Text>
-          <TouchableOpacity style={styles.composeBtn}>
-            <Ionicons name="create-outline" size={24} color="#6C63FF" />
+          <Text style={[styles.headerTitle, { color: colors.text }]}>Messages</Text>
+          <TouchableOpacity style={[styles.composeBtn, { backgroundColor: colors.iconBackground }]}>
+            <Ionicons name="create-outline" size={24} color={colors.primary} />
           </TouchableOpacity>
         </View>
 
@@ -31,15 +33,15 @@ export default function MessageScreen() {
                 <Text style={styles.avatarText}>{chat.name.charAt(0)}</Text>
               </View>
 
-              <View style={styles.chatInfo}>
+              <View style={[styles.chatInfo, { borderBottomColor: colors.border }]}>
                 <View style={styles.chatHeader}>
-                  <Text style={[styles.chatName, chat.unread > 0 && styles.unreadText]}>{chat.name}</Text>
-                  <Text style={[styles.chatTime, chat.unread > 0 && styles.unreadTime]}>{chat.time}</Text>
+                  <Text style={[styles.chatName, { color: colors.text }, chat.unread > 0 && { color: colors.text, fontWeight: 'bold' }]}>{chat.name}</Text>
+                  <Text style={[styles.chatTime, { color: colors.textSecondary }, chat.unread > 0 && { color: colors.primary, fontWeight: 'bold' }]}>{chat.time}</Text>
                 </View>
                 
                 <View style={styles.chatFooter}>
                   <Text 
-                    style={[styles.chatMessage, chat.unread > 0 && styles.unreadMessage]} 
+                    style={[styles.chatMessage, { color: colors.textSecondary }, chat.unread > 0 && { color: colors.text, fontWeight: 'bold' }]} 
                     numberOfLines={1}
                   >
                     {chat.message}

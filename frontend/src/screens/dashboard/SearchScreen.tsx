@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, TextInput, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '../../config/ThemeContext';
 
 export default function SearchScreen() {
+  const { colors } = useTheme();
   const [searchQuery, setSearchQuery] = useState('');
 
   const recentSearches = ['Paris, France', 'Hotels in Tokyo', 'Flights to Bali', 'Maldives Resorts'];
@@ -14,24 +16,24 @@ export default function SearchScreen() {
   ];
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={[styles.safeArea, { backgroundColor: colors.background }]}>
       <View style={styles.container}>
         
         {/* Animated Search Header */}
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>Search</Text>
-          <View style={styles.searchBar}>
-            <Ionicons name="search" size={20} color="#999" style={styles.searchIcon} />
+          <Text style={[styles.headerTitle, { color: colors.text }]}>Search</Text>
+          <View style={[styles.searchBar, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <Ionicons name="search" size={20} color={colors.textSecondary} style={styles.searchIcon} />
             <TextInput
-              style={styles.searchInput}
+              style={[styles.searchInput, { color: colors.text }]}
               placeholder="Where do you want to go?"
-              placeholderTextColor="#999"
+              placeholderTextColor={colors.textSecondary}
               value={searchQuery}
               onChangeText={setSearchQuery}
             />
             {searchQuery.length > 0 && (
               <TouchableOpacity onPress={() => setSearchQuery('')}>
-                <Ionicons name="close-circle" size={20} color="#ccc" />
+                <Ionicons name="close-circle" size={20} color={colors.textSecondary} />
               </TouchableOpacity>
             )}
           </View>
@@ -40,12 +42,12 @@ export default function SearchScreen() {
         <ScrollView showsVerticalScrollIndicator={false}>
           {/* Recent Searches */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Recent Searches</Text>
+            <Text style={[styles.sectionTitle, { color: colors.text }]}>Recent Searches</Text>
             <View style={styles.chipContainer}>
               {recentSearches.map((item, index) => (
-                <TouchableOpacity key={index} style={styles.chip}>
-                  <Ionicons name="time-outline" size={16} color="#666" style={{ marginRight: 5 }} />
-                  <Text style={styles.chipText}>{item}</Text>
+                <TouchableOpacity key={index} style={[styles.chip, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                  <Ionicons name="time-outline" size={16} color={colors.textSecondary} style={{ marginRight: 5 }} />
+                  <Text style={[styles.chipText, { color: colors.text }]}>{item}</Text>
                 </TouchableOpacity>
               ))}
             </View>
@@ -53,19 +55,19 @@ export default function SearchScreen() {
 
           {/* Trending Destinations */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Trending Right Now</Text>
+            <Text style={[styles.sectionTitle, { color: colors.text }]}>Trending Right Now</Text>
             {trendingDestinations.map((dest) => (
-              <TouchableOpacity key={dest.id} style={styles.trendingCard}>
+              <TouchableOpacity key={dest.id} style={[styles.trendingCard, { backgroundColor: colors.card }]}>
                 <View style={[styles.cardImage, { backgroundColor: dest.imageColor }]} />
                 <View style={styles.cardInfo}>
-                  <Text style={styles.cardTitle}>{dest.name}</Text>
-                  <Text style={styles.cardPrice}>From {dest.price}</Text>
+                  <Text style={[styles.cardTitle, { color: colors.text }]}>{dest.name}</Text>
+                  <Text style={[styles.cardPrice, { color: colors.primary }]}>From {dest.price}</Text>
                   <View style={styles.ratingRow}>
                     <Ionicons name="star" size={14} color="#FFD700" />
-                    <Text style={styles.ratingText}>{dest.rating}</Text>
+                    <Text style={[styles.ratingText, { color: colors.textSecondary }]}>{dest.rating}</Text>
                   </View>
                 </View>
-                <Ionicons name="chevron-forward" size={24} color="#ccc" />
+                <Ionicons name="chevron-forward" size={24} color={colors.textSecondary} />
               </TouchableOpacity>
             ))}
           </View>

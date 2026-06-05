@@ -5,8 +5,10 @@ import { useSharedValue } from 'react-native-reanimated';
 import InteractiveAirplane from '../components/InteractiveAirplane';
 import { signInWithEmailAndPassword, signInWithPopup, createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth, googleProvider, appleProvider } from '../config/firebase';
+import { useTheme } from '../config/ThemeContext';
 
 export default function AuthScreen({ navigation }: any) {
+  const { colors } = useTheme();
   const [emailFocus, setEmailFocus] = useState(false);
   const [passwordFocus, setPasswordFocus] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -104,7 +106,7 @@ export default function AuthScreen({ navigation }: any) {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={[styles.safeArea, { backgroundColor: colors.background }]}>
       <View style={{ flex: 1 }} onPointerMove={handlePointerMove}>
         <KeyboardAvoidingView
           style={styles.container}
@@ -116,16 +118,16 @@ export default function AuthScreen({ navigation }: any) {
             isPasswordFocused={passwordFocus}
             isPasswordVisible={isPasswordVisible}
           />
-          <View style={styles.form}>
+          <View style={[styles.form, { backgroundColor: colors.card }]}>
             <View style={styles.flexColumn}>
-              <Text style={styles.label}>Email</Text>
+              <Text style={[styles.label, { color: colors.text }]}>Email</Text>
             </View>
-            <View style={[styles.inputForm, emailFocus && styles.inputFormFocused]}>
-              <Ionicons name="mail-outline" size={20} color="#666" />
+            <View style={[styles.inputForm, { borderColor: colors.border }, emailFocus && { borderColor: colors.primary }]}>
+              <Ionicons name="mail-outline" size={20} color={colors.textSecondary} />
               <TextInput
-                style={[styles.input, Platform.OS === 'web' && { outlineStyle: 'none' } as any]}
+                style={[styles.input, { color: colors.text }, Platform.OS === 'web' && { outlineStyle: 'none' } as any]}
                 placeholder="Enter your Email"
-                placeholderTextColor="#999"
+                placeholderTextColor={colors.textSecondary}
                 value={email}
                 onChangeText={setEmail}
                 keyboardType="email-address"
@@ -136,14 +138,14 @@ export default function AuthScreen({ navigation }: any) {
             </View>
 
             <View style={[styles.flexColumn, { marginTop: 15 }]}>
-              <Text style={styles.label}>Password</Text>
+              <Text style={[styles.label, { color: colors.text }]}>Password</Text>
             </View>
-            <View style={[styles.inputForm, passwordFocus && styles.inputFormFocused]}>
-              <Ionicons name="lock-closed-outline" size={20} color="#666" />
+            <View style={[styles.inputForm, { borderColor: colors.border }, passwordFocus && { borderColor: colors.primary }]}>
+              <Ionicons name="lock-closed-outline" size={20} color={colors.textSecondary} />
               <TextInput
-                style={[styles.input, Platform.OS === 'web' && { outlineStyle: 'none' } as any]}
+                style={[styles.input, { color: colors.text }, Platform.OS === 'web' && { outlineStyle: 'none' } as any]}
                 placeholder="Enter your Password"
-                placeholderTextColor="#999"
+                placeholderTextColor={colors.textSecondary}
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry={!isPasswordVisible}
@@ -151,41 +153,41 @@ export default function AuthScreen({ navigation }: any) {
                 onBlur={() => setPasswordFocus(false)}
               />
               <TouchableOpacity onPress={() => setIsPasswordVisible(!isPasswordVisible)} style={{ padding: 5 }}>
-                <Ionicons name={isPasswordVisible ? "eye-off-outline" : "eye-outline"} size={20} color="#666" />
+                <Ionicons name={isPasswordVisible ? "eye-off-outline" : "eye-outline"} size={20} color={colors.textSecondary} />
               </TouchableOpacity>
             </View>
 
             <View style={styles.flexRow}>
               <View style={styles.rememberMeContainer}>
-                <View style={styles.radioPlaceholder} />
-                <Text style={styles.rememberText}>Remember me</Text>
+                <View style={[styles.radioPlaceholder, { borderColor: colors.textSecondary }]} />
+                <Text style={[styles.rememberText, { color: colors.text }]}>Remember me</Text>
               </View>
-              <Text style={styles.span}>Forgot password?</Text>
+              <Text style={[styles.span, { color: colors.primary }]}>Forgot password?</Text>
             </View>
 
-            <TouchableOpacity style={styles.buttonSubmit} onPress={handleLogin} disabled={loading}>
+            <TouchableOpacity style={[styles.buttonSubmit, { backgroundColor: colors.primary }]} onPress={handleLogin} disabled={loading}>
               {loading ? (
-                <ActivityIndicator color="white" />
+                <ActivityIndicator color="#FFF" />
               ) : (
                 <Text style={styles.buttonSubmitText}>Sign In</Text>
               )}
             </TouchableOpacity>
 
-            <Text style={styles.p}>
-              Don't have an account? <Text style={styles.span} onPress={handleSignUp}>Sign Up</Text>
+            <Text style={[styles.p, { color: colors.text }]}>
+              Don't have an account? <Text style={[styles.span, { color: colors.primary }]} onPress={handleSignUp}>Sign Up</Text>
             </Text>
 
-            <Text style={styles.pLine}>Or With</Text>
+            <Text style={[styles.pLine, { color: colors.textSecondary }]}>Or With</Text>
 
             <View style={styles.socialRow}>
-              <TouchableOpacity style={styles.btn} onPress={handleGoogleLogin}>
+              <TouchableOpacity style={[styles.btn, { backgroundColor: colors.card, borderColor: colors.border }]} onPress={handleGoogleLogin}>
                 <Ionicons name="logo-google" size={20} color="#EA4335" />
-                <Text style={styles.btnText}>Google</Text>
+                <Text style={[styles.btnText, { color: colors.text }]}>Google</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={styles.btn} onPress={handleAppleLogin}>
-                <Ionicons name="logo-apple" size={20} color="#000" />
-                <Text style={styles.btnText}>Apple</Text>
+              <TouchableOpacity style={[styles.btn, { backgroundColor: colors.card, borderColor: colors.border }]} onPress={handleAppleLogin}>
+                <Ionicons name="logo-apple" size={20} color={colors.text} />
+                <Text style={[styles.btnText, { color: colors.text }]}>Apple</Text>
               </TouchableOpacity>
             </View>
           </View>

@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Modal, TouchableOpacity, TextInput, ActivityInd
 import { Ionicons } from '@expo/vector-icons';
 import Animated, { FadeInUp, FadeOutDown } from 'react-native-reanimated';
 import GenerateButton from './GenerateButton';
+import { useTheme } from '../config/ThemeContext';
 
 const TypewriterText = ({ text, onComplete }: { text: string, onComplete?: () => void }) => {
   const [displayedText, setDisplayedText] = useState('');
@@ -23,7 +24,8 @@ const TypewriterText = ({ text, onComplete }: { text: string, onComplete?: () =>
     return () => clearInterval(timer);
   }, [text]); // only run when text changes
 
-  return <Text style={styles.gptText}>{displayedText}</Text>;
+  const { colors } = useTheme();
+  return <Text style={[styles.gptText, { color: colors.text }]}>{displayedText}</Text>;
 };
 
 interface BudgetCompanionProps {
@@ -36,6 +38,7 @@ interface BudgetCompanionProps {
 }
 
 export default function BudgetCompanion({ visible, onClose, initialFrom = '', initialTo = '', initialBudget = '', initialDays = '' }: BudgetCompanionProps) {
+  const { colors } = useTheme();
   const [from, setFrom] = useState(initialFrom);
   const [to, setTo] = useState(initialTo);
   const [budget, setBudget] = useState(initialBudget);
@@ -84,51 +87,55 @@ export default function BudgetCompanion({ visible, onClose, initialFrom = '', in
   return (
     <Modal visible={visible} animationType="slide" transparent={true}>
       <View style={styles.modalOverlay}>
-        <View style={styles.modalContent}>
+        <View style={[styles.modalContent, { backgroundColor: colors.background }]}>
 
           <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>AI Trip Planner ✨</Text>
-            <TouchableOpacity onPress={onClose} style={styles.closeBtn}>
-              <Ionicons name="close" size={24} color="#333" />
+            <Text style={[styles.modalTitle, { color: colors.text }]}>AI Trip Planner ✨</Text>
+            <TouchableOpacity onPress={onClose} style={[styles.closeBtn, { backgroundColor: colors.border }]}>
+              <Ionicons name="close" size={24} color={colors.text} />
             </TouchableOpacity>
           </View>
 
           <ScrollView showsVerticalScrollIndicator={false}>
             {/* Input Form */}
             <View style={styles.inputGroup}>
-              <View style={styles.inputRow}>
-                <Ionicons name="airplane-outline" size={20} color="#6C63FF" style={styles.inputIcon} />
+              <View style={[styles.inputRow, { backgroundColor: colors.card, borderColor: colors.border }]}>
+                <Ionicons name="airplane-outline" size={20} color={colors.primary} style={styles.inputIcon} />
                 <TextInput
-                  style={styles.input}
+                  style={[styles.input, { color: colors.text }]}
                   placeholder="From (e.g. New York)"
+                  placeholderTextColor={colors.textSecondary}
                   value={from}
                   onChangeText={setFrom}
                 />
               </View>
-              <View style={styles.inputRow}>
+              <View style={[styles.inputRow, { backgroundColor: colors.card, borderColor: colors.border }]}>
                 <Ionicons name="location-outline" size={20} color="#FF6B6B" style={styles.inputIcon} />
                 <TextInput
-                  style={styles.input}
+                  style={[styles.input, { color: colors.text }]}
                   placeholder="To (e.g. Paris)"
+                  placeholderTextColor={colors.textSecondary}
                   value={to}
                   onChangeText={setTo}
                 />
               </View>
-              <View style={styles.inputRow}>
+              <View style={[styles.inputRow, { backgroundColor: colors.card, borderColor: colors.border }]}>
                 <Ionicons name="wallet-outline" size={20} color="#4ECDC4" style={styles.inputIcon} />
                 <TextInput
-                  style={styles.input}
+                  style={[styles.input, { color: colors.text }]}
                   placeholder="Total Budget (INR)"
+                  placeholderTextColor={colors.textSecondary}
                   keyboardType="numeric"
                   value={budget}
                   onChangeText={setBudget}
                 />
               </View>
-              <View style={styles.inputRow}>
+              <View style={[styles.inputRow, { backgroundColor: colors.card, borderColor: colors.border }]}>
                 <Ionicons name="calendar-outline" size={20} color="#FFA07A" style={styles.inputIcon} />
                 <TextInput
-                  style={styles.input}
+                  style={[styles.input, { color: colors.text }]}
                   placeholder="How many days stay?"
+                  placeholderTextColor={colors.textSecondary}
                   keyboardType="numeric"
                   value={days}
                   onChangeText={setDays}
@@ -159,7 +166,7 @@ export default function BudgetCompanion({ visible, onClose, initialFrom = '', in
                   <View style={styles.gptAvatar}>
                     <Ionicons name="sparkles" size={16} color="#FFF" />
                   </View>
-                  <View style={styles.gptBubble}>
+                  <View style={[styles.gptBubble, { backgroundColor: colors.card, borderColor: colors.border }]}>
                     <TypewriterText text={plan.formatted_report} onComplete={() => setIsTyping(false)} />
                   </View>
                 </View>
@@ -169,36 +176,36 @@ export default function BudgetCompanion({ visible, onClose, initialFrom = '', in
                   <Animated.View entering={FadeInUp.duration(800)}>
                     {/* Primary Recommendations */}
                     <View style={styles.recommendationGrid}>
-                      <View style={styles.primaryCard}>
-                        <View style={[styles.iconBox, { backgroundColor: '#F0F0FF' }]}>
-                          <Ionicons name={plan.transport?.toLowerCase() === 'flight' ? 'airplane' : 'train'} size={24} color="#6C63FF" />
+                      <View style={[styles.primaryCard, { backgroundColor: colors.card }]}>
+                        <View style={[styles.iconBox, { backgroundColor: colors.iconBackground }]}>
+                          <Ionicons name={plan.transport?.toLowerCase() === 'flight' ? 'airplane' : 'train'} size={24} color={colors.primary} />
                         </View>
-                        <Text style={styles.cardLabel}>Transport</Text>
-                        <Text style={styles.cardValue}>{plan.transport}</Text>
+                        <Text style={[styles.cardLabel, { color: colors.textSecondary }]}>Transport</Text>
+                        <Text style={[styles.cardValue, { color: colors.text }]}>{plan.transport}</Text>
                       </View>
 
-                      <View style={styles.primaryCard}>
-                        <View style={[styles.iconBox, { backgroundColor: '#FFF0F0' }]}>
-                          <Ionicons name="bed" size={24} color="#FF6B6B" />
+                      <View style={[styles.primaryCard, { backgroundColor: colors.card }]}>
+                        <View style={[styles.iconBox, { backgroundColor: colors.errorBackground }]}>
+                          <Ionicons name="bed" size={24} color={colors.error} />
                         </View>
-                        <Text style={styles.cardLabel}>Hotel</Text>
-                        <Text style={styles.cardValue} numberOfLines={1} adjustsFontSizeToFit>{plan.hotel_name}</Text>
+                        <Text style={[styles.cardLabel, { color: colors.textSecondary }]}>Hotel</Text>
+                        <Text style={[styles.cardValue, { color: colors.text }]} numberOfLines={1} adjustsFontSizeToFit>{plan.hotel_name}</Text>
                         <Text style={styles.cardCost}>₹{plan.hotel_price_per_night} / night</Text>
                       </View>
                     </View>
 
                     {/* Top Attractions */}
-                    <View style={styles.attractionSection}>
+                    <View style={[styles.attractionSection, { backgroundColor: colors.iconBackground }]}>
                       <View style={styles.sectionHeaderRow}>
-                        <Ionicons name="map" size={20} color="#4ECDC4" />
-                        <Text style={styles.sectionHeading}>Top Attractions</Text>
+                        <Ionicons name="map" size={20} color={colors.primary} />
+                        <Text style={[styles.sectionHeading, { color: colors.text }]}>Top Attractions</Text>
                       </View>
-                      <Text style={styles.subtext}>Est. Ticket Cost: ₹{plan.attraction_ticket_cost}</Text>
+                      <Text style={[styles.subtext, { color: colors.textSecondary }]}>Est. Ticket Cost: ₹{plan.attraction_ticket_cost}</Text>
 
                       <View style={styles.pillContainer}>
                         {plan.top_attractions?.split('|').map((attr: string, index: number) => (
-                          <View key={index} style={styles.pill}>
-                            <Text style={styles.pillText}>{attr.trim()}</Text>
+                          <View key={index} style={[styles.pill, { backgroundColor: colors.card, borderColor: colors.primary }]}>
+                            <Text style={[styles.pillText, { color: colors.primary }]}>{attr.trim()}</Text>
                           </View>
                         ))}
                       </View>
@@ -206,25 +213,25 @@ export default function BudgetCompanion({ visible, onClose, initialFrom = '', in
 
                     {/* Alternatives */}
                     <View style={styles.alternativeSection}>
-                      <Text style={styles.sectionHeading}>Alternative Hotels</Text>
+                      <Text style={[styles.sectionHeading, { color: colors.text }]}>Alternative Hotels</Text>
                       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.altScroll}>
                         {plan.alternative_hotels && plan.alternative_hotels.length > 0 ? plan.alternative_hotels.map((hotel: string, index: number) => (
-                          <View key={index} style={styles.altCard}>
+                          <View key={index} style={[styles.altCard, { backgroundColor: colors.iconBackground, borderColor: colors.border }]}>
                             <Ionicons name="business" size={16} color="#FF9F43" style={{ marginRight: 6 }} />
-                            <Text style={styles.altText}>{hotel}</Text>
+                            <Text style={[styles.altText, { color: colors.textSecondary }]}>{hotel}</Text>
                           </View>
-                        )) : <Text style={styles.altText}>None found in this budget.</Text>}
+                        )) : <Text style={[styles.altText, { color: colors.textSecondary }]}>None found in this budget.</Text>}
                       </ScrollView>
                     </View>
 
                     <View style={styles.alternativeSection}>
-                      <Text style={styles.sectionHeading}>Alternative Attractions</Text>
+                      <Text style={[styles.sectionHeading, { color: colors.text }]}>Alternative Attractions</Text>
                       {plan.alternative_attractions && plan.alternative_attractions.length > 0 ? plan.alternative_attractions.slice(0, 3).map((attrs: string, index: number) => (
-                        <View key={index} style={styles.altAttractionCard}>
-                          <Ionicons name="compass-outline" size={16} color="#6C63FF" style={{ marginTop: 2, marginRight: 8 }} />
-                          <Text style={styles.altAttractionText}>{attrs.split('|').map((a: string) => a.trim()).join(', ')}</Text>
+                        <View key={index} style={[styles.altAttractionCard, { backgroundColor: colors.iconBackground, borderColor: colors.border }]}>
+                          <Ionicons name="compass-outline" size={16} color={colors.primary} style={{ marginTop: 2, marginRight: 8 }} />
+                          <Text style={[styles.altAttractionText, { color: colors.text }]}>{attrs.split('|').map((a: string) => a.trim()).join(', ')}</Text>
                         </View>
-                      )) : <Text style={styles.altText}>None found.</Text>}
+                      )) : <Text style={[styles.altText, { color: colors.textSecondary }]}>None found.</Text>}
                     </View>
                   </Animated.View>
                 )}
