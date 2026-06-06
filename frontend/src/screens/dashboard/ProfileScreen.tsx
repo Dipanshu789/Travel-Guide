@@ -254,6 +254,9 @@ export default function ProfileScreen({ navigation }: any) {
 
       if (saveRes.ok) {
         fetchProfileAndPosts();
+      } else {
+        const saveData = await saveRes.json();
+        throw new Error(saveData.error || 'Failed to save to database');
       }
     } catch (err: any) {
       console.error('Post upload failed:', err);
