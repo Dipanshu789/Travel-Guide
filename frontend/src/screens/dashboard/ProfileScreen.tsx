@@ -78,7 +78,7 @@ export default function ProfileScreen({ navigation }: any) {
       if (storiesRes.ok) {
         const sData = await storiesRes.json();
         // find own story
-        const ownStory = sData.stories?.find((s: any) => s.userId === uid);
+        const ownStory = sData.stories?.find((s: any) => s.userId === currentUser.uid);
         if (ownStory) {
           setActiveStory(ownStory);
         } else {
