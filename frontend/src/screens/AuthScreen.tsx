@@ -27,7 +27,7 @@ export default function AuthScreen({ navigation }: any) {
 
   const syncWithBackend = async (idToken: string) => {
     try {
-      const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL || 'http://localhost:3000';
+      const BACKEND_URL = (process.env.EXPO_PUBLIC_BACKEND_URL || 'http://localhost:3000').replace(/\/$/, '');
       const response = await fetch(`${BACKEND_URL}/api/auth/sync`, {
         method: 'POST',
         headers: {

@@ -10,7 +10,7 @@ import StoryViewer from '../../components/StoryViewer';
 import PostDetailModal from '../../components/PostDetailModal';
 
 export default function ProfileScreen({ navigation }: any) {
-  const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL || 'http://localhost:3000';
+  const BACKEND_URL = (process.env.EXPO_PUBLIC_BACKEND_URL || 'http://localhost:3000').replace(/\/$/, '');
   const [profile, setProfile] = useState<any>(null);
   const [userPosts, setUserPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);

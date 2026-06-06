@@ -13,7 +13,7 @@ import * as ImagePicker from 'expo-image-picker';
 
 export default function HomeScreen() {
   const { colors } = useTheme();
-  const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL || 'http://localhost:3000';
+  const BACKEND_URL = (process.env.EXPO_PUBLIC_BACKEND_URL || 'http://localhost:3000').replace(/\/$/, '');
   
   const [profile, setProfile] = useState<any>(null);
 

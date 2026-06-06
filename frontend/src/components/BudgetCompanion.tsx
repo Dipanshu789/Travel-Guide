@@ -61,7 +61,7 @@ export default function BudgetCompanion({ visible, onClose, initialFrom = '', in
     setIsTyping(false);
 
     try {
-      let BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL || 'http://localhost:3000';
+      let BACKEND_URL = (process.env.EXPO_PUBLIC_BACKEND_URL || 'http://localhost:3000').replace(/\/$/, '');
       if (BACKEND_URL.endsWith('/')) BACKEND_URL = BACKEND_URL.slice(0, -1);
       const response = await fetch(`${BACKEND_URL}/api/ai/plan`, {
         method: 'POST',
