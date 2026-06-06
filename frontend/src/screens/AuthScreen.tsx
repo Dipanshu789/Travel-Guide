@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity, KeyboardAvoidingVi
 import { Ionicons } from '@expo/vector-icons';
 import { useSharedValue } from 'react-native-reanimated';
 import InteractiveAirplane from '../components/InteractiveAirplane';
+import AuthLoader from '../components/AuthLoader';
 import { signInWithEmailAndPassword, signInWithPopup, createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth, googleProvider, appleProvider } from '../config/firebase';
 import { useTheme } from '../config/ThemeContext';
@@ -193,6 +194,7 @@ export default function AuthScreen({ navigation }: any) {
           </View>
         </KeyboardAvoidingView>
       </View>
+      {loading && <AuthLoader />}
     </SafeAreaView>
   );
 }

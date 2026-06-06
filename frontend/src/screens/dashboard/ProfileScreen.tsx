@@ -8,6 +8,8 @@ import * as ImagePicker from 'expo-image-picker';
 import ImageEditorModal from '../../components/ImageEditorModal';
 import StoryViewer from '../../components/StoryViewer';
 import PostDetailModal from '../../components/PostDetailModal';
+import ConnectionsModal from '../../components/ConnectionsModal';
+import PublicProfileModal from '../../components/PublicProfileModal';
 
 export default function ProfileScreen({ navigation }: any) {
   const BACKEND_URL = (process.env.EXPO_PUBLIC_BACKEND_URL || 'http://localhost:3000').replace(/\/$/, '');
@@ -36,6 +38,15 @@ export default function ProfileScreen({ navigation }: any) {
 
   const [selectedPost, setSelectedPost] = useState<any>(null);
   const [postDetailVisible, setPostDetailVisible] = useState(false);
+
+  const [connectionsVisible, setConnectionsVisible] = useState(false);
+  const [connectionsInitialTab, setConnectionsInitialTab] = useState<'followers' | 'following'>('followers');
+
+  const [publicProfileVisible, setPublicProfileVisible] = useState(false);
+  const [selectedUid, setSelectedUid] = useState<string | null>(null);
+
+  const [followersCount, setFollowersCount] = useState(0);
+  const [followingCount, setFollowingCount] = useState(0);
 
   const fetchProfileAndPosts = async () => {
     try {
@@ -77,13 +88,23 @@ export default function ProfileScreen({ navigation }: any) {
       });
       if (storiesRes.ok) {
         const sData = await storiesRes.json();
-        // find own story
         const ownStory = sData.stories?.find((s: any) => s.userId === currentUser.uid);
         if (ownStory) {
           setActiveStory(ownStory);
         } else {
           setActiveStory(null);
         }
+      }
+
+      // Fetch connection counts
+      const connRes = await fetch(`${BACKEND_URL}/api/user/connections`, {
+        method: 'GET',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (connRes.ok) {
+        const cData = await connRes.json();
+        setFollowersCount(cData.followersCount || 0);
+        setFollowingCount(cData.followingCount || 0);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -332,14 +353,20 @@ export default function ProfileScreen({ navigation }: any) {
               <Text style={[styles.statNumber, { color: colors.text }]}>{userPosts.length}</Text>
               <Text style={[styles.statLabel, { color: colors.textSecondary }]}>Posts</Text>
             </View>
-            <View style={styles.statBox}>
-              <Text style={[styles.statNumber, { color: colors.text }]}>1,248</Text>
+            <TouchableOpacity 
+              style={styles.statBox}
+              onPress={() => { setConnectionsInitialTab('followers'); setConnectionsVisible(true); }}
+            >
+              <Text style={[styles.statNumber, { color: colors.text }]}>{followersCount}</Text>
               <Text style={[styles.statLabel, { color: colors.textSecondary }]}>Followers</Text>
-            </View>
-            <View style={styles.statBox}>
-              <Text style={[styles.statNumber, { color: colors.text }]}>342</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.statBox}
+              onPress={() => { setConnectionsInitialTab('following'); setConnectionsVisible(true); }}
+            >
+              <Text style={[styles.statNumber, { color: colors.text }]}>{followingCount}</Text>
               <Text style={[styles.statLabel, { color: colors.textSecondary }]}>Following</Text>
-            </View>
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -500,6 +527,28 @@ export default function ProfileScreen({ navigation }: any) {
         visible={postDetailVisible}
         post={selectedPost}
         onClose={() => setPostDetailVisible(false)}
+      />
+
+      <ConnectionsModal
+        visible={connectionsVisible}
+        initialTab={connectionsInitialTab}
+        onClose={() => setConnectionsVisible(false)}
+        onUserSelect={(uid) => {
+          setSelectedUid(uid);
+          setConnectionsVisible(false);
+          setTimeout(() => {
+            setPublicProfileVisible(true);
+          }, 500);
+        }}
+      />
+
+      <PublicProfileModal
+        visible={publicProfileVisible}
+        uid={selectedUid}
+        onClose={() => setPublicProfileVisible(false)}
+        onMessage={(user) => {
+          navigation.navigate('Messages', { screen: 'ChatDetail', params: { user } });
+        }}
       />
     </SafeAreaView>
   );

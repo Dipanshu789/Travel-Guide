@@ -4,18 +4,23 @@ import { View, Text, StyleSheet, ScrollView, SafeAreaView, TouchableOpacity, Tex
 import { Ionicons } from '@expo/vector-icons';
 import { auth } from '../../config/firebase';
 import Animated, { FadeInDown, FadeInRight, useSharedValue, useAnimatedStyle, withRepeat, withSequence, withTiming } from 'react-native-reanimated';
+import { useNavigation } from '@react-navigation/native';
 import BudgetCompanion from '../../components/BudgetCompanion';
 import ImageEditorModal from '../../components/ImageEditorModal';
 import StoryViewer from '../../components/StoryViewer';
 import PostDetailModal from '../../components/PostDetailModal';
+import SearchInput from '../../components/SearchInput';
+import Loader from '../../components/Loader';
 import { useTheme } from '../../config/ThemeContext';
 import * as ImagePicker from 'expo-image-picker';
 
 export default function HomeScreen() {
   const { colors } = useTheme();
+  const navigation = useNavigation<any>();
   const BACKEND_URL = (process.env.EXPO_PUBLIC_BACKEND_URL || 'http://localhost:3000').replace(/\/$/, '');
   
   const [profile, setProfile] = useState<any>(null);
+  const [isSearching, setIsSearching] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -256,7 +261,7 @@ export default function HomeScreen() {
         </Animated.View>
 
         {/* Trip Planner Card */}
-        <Animated.View style={[styles.plannerCard, { backgroundColor: colors.card }]} entering={FadeInDown.duration(800).delay(200).springify()}>
+        <Animated.View style={[styles.plannerCard, { backgroundColor: colors.card, paddingBottom: 25, zIndex: 10 }]} entering={FadeInDown.duration(800).delay(200).springify()}>
           <View style={styles.inputWrapper}>
             <Ionicons name="airplane-outline" size={20} color={colors.primary} style={styles.inputIcon} />
             <TextInput 
@@ -278,7 +283,20 @@ export default function HomeScreen() {
               onChangeText={setTo}
             />
           </View>
-          
+          <View style={[styles.divider, { backgroundColor: colors.border }]} />
+          <SearchInput 
+            style={{ position: 'absolute', bottom: -20, right: 20, paddingVertical: 0, zIndex: 10 }}
+            onPress={() => {
+              if (!from && !to) return;
+              setIsSearching(true);
+              setTimeout(() => {
+                setIsSearching(false);
+                navigation.navigate('Search', { 
+                  searchQuery: `${from ? from : ''}${from && to ? ' to ' : ''}${to ? to : ''}`
+                });
+              }, 2000);
+            }} 
+          />
         </Animated.View>
 
         {/* Categories */}
@@ -413,11 +431,32 @@ export default function HomeScreen() {
         post={selectedPost}
         onClose={() => setPostDetailVisible(false)}
       />
+
+      {/* Loading Modal */}
+      {isSearching && (
+        <View style={styles.loadingOverlay}>
+          <Loader />
+          <Text style={styles.loadingText}>Searching the best routes...</Text>
+        </View>
+      )}
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  loadingOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 9999,
+  },
+  loadingText: {
+    color: '#FFF',
+    marginTop: 20,
+    fontSize: 16,
+    fontWeight: '600',
+  },
   safeArea: {
     flex: 1,
     backgroundColor: '#FAFAFA',
