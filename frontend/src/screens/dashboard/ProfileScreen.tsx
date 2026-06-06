@@ -255,8 +255,9 @@ export default function ProfileScreen({ navigation }: any) {
       if (saveRes.ok) {
         fetchProfileAndPosts();
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Post upload failed:', err);
+      Alert.alert("Upload Error", err.message || "Failed to upload.");
       throw err;
     }
   };
