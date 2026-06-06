@@ -195,7 +195,7 @@ export default function ProfileScreen({ navigation }: any) {
       mediaTypes: ['images'],
       allowsEditing: true,
       aspect: [4, 4],
-      quality: 0.8,
+      quality: 0.5,
       base64: true,
     });
 
@@ -213,7 +213,7 @@ export default function ProfileScreen({ navigation }: any) {
       mediaTypes: ['images'],
       allowsEditing: true,
       aspect: [9, 16],
-      quality: 0.8,
+      quality: 0.5,
       base64: true,
     });
 
@@ -286,7 +286,7 @@ export default function ProfileScreen({ navigation }: any) {
 
   const displayName = profile?.displayName || auth.currentUser?.email?.split('@')[0] || 'Traveler';
   const displayEmail = profile?.email || auth.currentUser?.email || 'No email';
-  const photoURL = profile?.photoURL;
+  const photoURL = profile?.photoURL || auth.currentUser?.photoURL;
   const bio = profile?.bio || 'Wandering the globe. 🌍✈️';
 
   return (
