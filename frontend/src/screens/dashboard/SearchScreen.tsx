@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, TextInput, ScrollView, TouchableOpacity, Image, ActivityIndicator, useWindowDimensions, Modal, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useRoute } from '@react-navigation/native';
+import { useRoute, useNavigation } from '@react-navigation/native';
 import { useTheme } from '../../config/ThemeContext';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Video, ResizeMode } from 'expo-av';
@@ -34,6 +34,8 @@ export default function SearchScreen() {
   const [displayData, setDisplayData] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [isShareModalVisible, setIsShareModalVisible] = useState(false);
+  const navigation = useNavigation<any>();
   const { width } = useWindowDimensions();
   const ITEM_SIZE = width / 3;
 
@@ -267,7 +269,7 @@ export default function SearchScreen() {
                 <TouchableOpacity style={styles.modalIcon}>
                   <Ionicons name="chatbubble-outline" size={26} color={colors.text} />
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.modalIcon}>
+                <TouchableOpacity style={styles.modalIcon} onPress={() => setIsShareModalVisible(true)}>
                   <Ionicons name="paper-plane-outline" size={26} color={colors.text} />
                 </TouchableOpacity>
               </View>
@@ -285,6 +287,56 @@ export default function SearchScreen() {
               </Text>
               <Text style={styles.modalCommentsCount}>View all {mockComments} comments</Text>
             </View>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
+
+  const renderShareModal = () => {
+    if (!isShareModalVisible) return null;
+
+    const dummyUsers = [
+      { id: 1, name: 'Travel Support', avatarColor: '#6C63FF' },
+      { id: 2, name: 'Local Guide Marco', avatarColor: '#4ECDC4' },
+      { id: 3, name: 'Hotel Bellevue', avatarColor: '#FF6B6B' },
+    ];
+
+    const handleShare = (user: any) => {
+      setIsShareModalVisible(false);
+      setSelectedItem(null);
+      navigation.navigate('Chat', {
+        chatId: user.id,
+        chatName: user.name,
+        avatarColor: user.avatarColor,
+        sharedPost: selectedItem
+      });
+    };
+
+    return (
+      <Modal visible={isShareModalVisible} transparent animationType="slide" onRequestClose={() => setIsShareModalVisible(false)}>
+        <View style={styles.shareModalOverlay}>
+          <Pressable style={styles.modalBackdrop} onPress={() => setIsShareModalVisible(false)} />
+          <View style={[styles.shareModalContent, { backgroundColor: isDark ? '#1C1C1E' : '#FFFFFF' }]}>
+            <View style={styles.shareModalHeader}>
+              <Text style={[styles.shareModalTitle, { color: colors.text }]}>Send to</Text>
+              <TouchableOpacity onPress={() => setIsShareModalVisible(false)}>
+                <Ionicons name="close" size={24} color={colors.textSecondary} />
+              </TouchableOpacity>
+            </View>
+            <ScrollView style={styles.shareUserList}>
+              {dummyUsers.map((user) => (
+                <TouchableOpacity key={user.id} style={styles.shareUserRow} onPress={() => handleShare(user)}>
+                  <View style={[styles.shareAvatar, { backgroundColor: user.avatarColor }]}>
+                    <Text style={styles.shareAvatarText}>{user.name.charAt(0)}</Text>
+                  </View>
+                  <Text style={[styles.shareUserName, { color: colors.text }]}>{user.name}</Text>
+                  <View style={[styles.sendButton, { backgroundColor: colors.primary }]}>
+                    <Text style={styles.sendButtonText}>Send</Text>
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
           </View>
         </View>
       </Modal>
@@ -357,6 +409,7 @@ export default function SearchScreen() {
         {renderInstagramGrid()}
       </ScrollView>
       {renderPostModal()}
+      {renderShareModal()}
     </SafeAreaView>
   );
 }
@@ -525,5 +578,62 @@ const styles = StyleSheet.create({
     color: '#888',
     fontSize: 14,
     marginTop: 2,
+  },
+  shareModalOverlay: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  shareModalContent: {
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 20,
+    maxHeight: '50%',
+  },
+  shareModalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  shareModalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  shareUserList: {
+    marginBottom: 20,
+  },
+  shareUserRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  shareAvatar: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  shareAvatarText: {
+    color: '#FFF',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  shareUserName: {
+    flex: 1,
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  sendButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+  },
+  sendButtonText: {
+    color: '#FFF',
+    fontWeight: 'bold',
+    fontSize: 14,
   },
 });

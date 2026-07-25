@@ -547,7 +547,12 @@ export default function ProfileScreen({ navigation }: any) {
         uid={selectedUid}
         onClose={() => setPublicProfileVisible(false)}
         onMessage={(user) => {
-          navigation.navigate('Messages', { screen: 'ChatDetail', params: { user } });
+          navigation.navigate('Chat', { 
+            chatId: user.uid || selectedUid || 'custom_chat', 
+            chatName: user.displayName || user.email?.split('@')[0] || 'Traveler', 
+            avatarColor: '#6C63FF',
+            recipientAvatar: user.photoURL || null
+          });
         }}
       />
     </SafeAreaView>

@@ -78,6 +78,13 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Image URL is required' }, { status: 400, headers });
     }
 
+    // Ensure the user exists in the travel_users table first
+    await pool.query(`
+      INSERT INTO travel_users (uid, display_name, updated_at)
+      VALUES ($1, $2, CURRENT_TIMESTAMP)
+      ON CONFLICT (uid) DO NOTHING
+    `, [uid, decodedToken.name || 'Traveler']);
+
     const { rows } = await pool.query(`
       INSERT INTO travel_stories (user_id, image_url, expires_at)
       VALUES ($1, $2, CURRENT_TIMESTAMP + INTERVAL '24 hours')

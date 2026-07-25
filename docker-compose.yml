@@ -41,3 +41,15 @@ services:
     depends_on:
       - kafka
       - rabbitmq
+
+  chat-service:
+    build:
+      context: ./chat-service
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+    environment:
+      RABBITMQ_URL: "amqp://user:password@rabbitmq:5672"
+      PORT: 4000
+    depends_on:
+      - rabbitmq

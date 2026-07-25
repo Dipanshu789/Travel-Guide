@@ -11,6 +11,7 @@ import HomeScreen from '../screens/dashboard/HomeScreen';
 import SearchScreen from '../screens/dashboard/SearchScreen';
 import MessageScreen from '../screens/dashboard/MessageScreen';
 import ProfileScreen from '../screens/dashboard/ProfileScreen';
+import ChatScreen from '../screens/dashboard/ChatScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -67,6 +68,7 @@ export default function AppNavigator() {
         <Stack.Screen name="Splash" component={SplashScreen} />
         <Stack.Screen name="Auth" component={AuthScreen} />
         <Stack.Screen name="Dashboard" component={DashboardTabs} />
+        <Stack.Screen name="Chat" component={ChatScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

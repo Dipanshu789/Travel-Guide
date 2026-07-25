@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
-import { View, Text, StyleSheet, ScrollView, SafeAreaView, TouchableOpacity, TextInput, Image } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, SafeAreaView, TouchableOpacity, TextInput, Image, Modal, FlatList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { auth } from '../../config/firebase';
 import Animated, { FadeInDown, FadeInRight, useSharedValue, useAnimatedStyle, withRepeat, withSequence, withTiming } from 'react-native-reanimated';
@@ -64,6 +64,28 @@ export default function HomeScreen() {
   const [editorVisible, setEditorVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [selectedBase64, setSelectedBase64] = useState<string | null>(null);
+
+  const [notificationsVisible, setNotificationsVisible] = useState(false);
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [loadingNotifications, setLoadingNotifications] = useState(false);
+
+  const fetchNotifications = async () => {
+    try {
+      setLoadingNotifications(true);
+      const token = await auth.currentUser?.getIdToken();
+      const res = await fetch(`${BACKEND_URL}/api/user/notifications`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setNotifications(data.notifications || []);
+      }
+    } catch (e) {
+      console.error('Failed to fetch notifications', e);
+    } finally {
+      setLoadingNotifications(false);
+    }
+  };
 
   const fetchStories = async () => {
     try {
@@ -208,7 +230,13 @@ export default function HomeScreen() {
             <Text style={[styles.subtitle, { color: colors.textSecondary }]}>Where to next?</Text>
           </View>
           <Animated.View style={bellAnimatedStyle}>
-            <TouchableOpacity style={[styles.notificationBtn, { backgroundColor: colors.card }]}>
+            <TouchableOpacity 
+              style={[styles.notificationBtn, { backgroundColor: colors.card }]}
+              onPress={() => {
+                setNotificationsVisible(true);
+                fetchNotifications();
+              }}
+            >
               <Ionicons name="notifications-outline" size={24} color={colors.text} />
               <View style={styles.badge} />
             </TouchableOpacity>
@@ -439,13 +467,116 @@ export default function HomeScreen() {
           <Text style={styles.loadingText}>Searching the best routes...</Text>
         </View>
       )}
+
+      {/* Notifications Modal */}
+      <Modal visible={notificationsVisible} animationType="slide" transparent={true} onRequestClose={() => setNotificationsVisible(false)}>
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContent, { backgroundColor: colors.background, maxHeight: '80%' }]}>
+            <View style={styles.modalHeader}>
+              <Text style={[styles.modalTitle, { color: colors.text }]}>Notifications</Text>
+              <TouchableOpacity onPress={() => setNotificationsVisible(false)}>
+                <Ionicons name="close" size={24} color={colors.text} />
+              </TouchableOpacity>
+            </View>
+
+            {loadingNotifications ? (
+              <Text style={{ textAlign: 'center', marginVertical: 20, color: colors.textSecondary }}>Loading notifications...</Text>
+            ) : (
+              <FlatList
+                data={notifications}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item }) => (
+                  <TouchableOpacity 
+                    style={styles.notificationRow}
+                    onPress={() => {
+                      setNotificationsVisible(false);
+                      navigation.navigate('Chat', {
+                        chatId: item.senderId,
+                        chatName: item.senderName,
+                        avatarColor: '#6C63FF'
+                      });
+                    }}
+                  >
+                    <View style={[styles.notificationAvatar, { backgroundColor: '#6C63FF' }]}>
+                      <Text style={styles.notificationAvatarText}>{item.senderName.charAt(0)}</Text>
+                    </View>
+                    <View style={styles.notificationInfo}>
+                      <Text style={[styles.notificationSender, { color: colors.text }]}>{item.senderName} sent you a message</Text>
+                      <Text style={[styles.notificationMessage, { color: colors.textSecondary }]} numberOfLines={2}>{item.message}</Text>
+                    </View>
+                  </TouchableOpacity>
+                )}
+                ListEmptyComponent={
+                  <Text style={{ textAlign: 'center', marginVertical: 40, color: colors.textSecondary }}>No new notifications.</Text>
+                }
+              />
+            )}
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 20,
+    paddingBottom: 40,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  notificationRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(150,150,150,0.1)',
+  },
+  notificationAvatar: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 15,
+  },
+  notificationAvatarText: {
+    color: '#FFF',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  notificationInfo: {
+    flex: 1,
+  },
+  notificationSender: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  notificationMessage: {
+    fontSize: 14,
+  },
   loadingOverlay: {
-    ...StyleSheet.absoluteFillObject,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     backgroundColor: 'rgba(0,0,0,0.6)',
     justifyContent: 'center',
     alignItems: 'center',
